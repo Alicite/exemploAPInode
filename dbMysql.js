@@ -1,8 +1,8 @@
 import mysql from 'mysql2/promise';
 
 const conexao = async () => {
-    if (global.conexao && global.conexao.state !== 'disconnected') {
-        return global.conexao;
+    if (global.conexaoMySQL && global.conexaoMySQL.state !== 'disconnected') {
+        return global.conexaoMySQL;
     } else {
         const db = mysql.createConnection({
             host: 'localhost',
@@ -11,7 +11,7 @@ const conexao = async () => {
             password: '123456',
             database: 'users'
         });
-        global.conexao = db;
+        global.conexaoMySQL = db;
         return db;
     }
 }
