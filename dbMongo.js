@@ -26,13 +26,11 @@ const getUser = async (id=undefined) => {
     if (!id) {
         data = await conn.db("Users").collection("User").find({}).toArray();
     } else {
-        console.log(id);
-        data = await conn.db("Users").collection("User").findOne({_id: new ObjectId(id)});
+        data = await conn.db("Users").collection("User").findOne({_id_: new ObjectId(id)});
     }
     
     await conn.close();
     return data;
-
 }
 
 const createUser  = async (user) => {
@@ -45,6 +43,31 @@ const createUser  = async (user) => {
     } catch (error) {
         return `Não foi possível adicionar o usuário ${user.nome}. Erro: ${error.message}!`
     }
-} 
+}
 
-console.log(await createUser({nome: "Luiza", idade: 19, email: "luiza@gmail.com"}));
+const attUser  = async (user, id) => {
+    try {
+        const conn = await conexao();
+        await conn.db("Users").collection("User").replaceOne({ _id: new ObjectId(id)}, user);
+        await conn.close();
+    
+        return `${user.nome} atualizado no MongoDB com sucesso!` 
+    } catch (error) {
+        return `Não foi possível atualizar o usuário ${user.nome}. Erro: ${error.message}!`
+    }
+}
+
+const delUser  = async (id) => {
+    try {
+        const conn = await conexao();
+        await conn.db("Users").collection("User").deleteOne({ _id: new ObjectId(id)});
+        await conn.close();
+    
+        return `Usuário(id: ${id}) deletado do MongoDB com sucesso!` 
+    } catch (error) {
+        return `Não foi possível deletar o usuário. Id do usuário: ${id}. Erro: ${error.message}!`
+    }
+}
+
+const dbMongo = { getUser, createUser, attUser, delUser };
+export default dbMongo;

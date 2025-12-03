@@ -31,13 +31,17 @@ const getUser = async (id=undefined) => {
 }
 
 const createUser = async (user) => {
-    const conec = await conexao();
-    await conec.query(
-        'INSERT INTO user(nome, idade, email) VALUES(?, ?, ?);',
-        [user.nome, user.idade, user.email]
-    );
-
-    return `${user.nome} foi adicionado ao BD com sucesso!`;
+    try {
+        const conec = await conexao();
+        await conec.query(
+            'INSERT INTO user(nome, idade, email) VALUES(?, ?, ?);',
+            [user.nome, user.idade, user.email]
+        );
+    
+        return `${user.nome} foi adicionado ao MySQL com sucesso!`;
+    } catch (e) {
+        return `Não foi possível adicionar o usuário ${user.nome} ao MySQL! Erro: ${e.message}`;
+    }
 }
 
 const attUser = async (user, id) => {
@@ -47,14 +51,14 @@ const attUser = async (user, id) => {
         [user.nome, user.idade, user.email, id]
     );
 
-    return `${user.nome} foi alterado com sucesso!`;
+    return `${user.nome} foi alterado com sucesso no MySQL!`;
 }
 
 const delUser = async (id) => {
     const conec = await conexao();
     const user = await conec.query('DELETE FROM user WHERE id = ?;', [id]);
 
-    return `Usuário(id: ${id}) deletado com sucesso!`;
+    return `Usuário(id: ${id}) deletado com sucesso do MySQL!`;
 }
 
 const dbMysql = { getUser, createUser, attUser, delUser };
